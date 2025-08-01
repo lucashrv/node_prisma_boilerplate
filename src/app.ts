@@ -1,5 +1,10 @@
 import express, { Application } from "express";
 import { config } from "dotenv";
+import cors from "cors";
+import sanitizeMiddleware from "@/middlewares/sanitize";
+import helmet from "helmet";
+import rateLimiter from "./middlewares/rateLimiter";
+import hpp from "hpp";
 
 config();
 
@@ -13,9 +18,43 @@ export default class App {
     }
 
     private initializeMiddlewares() {
+        // Parse incoming JSON, TEXT and URL-encoded data
         this.app.use(express.json({ limit: "10mb" }));
         this.app.use(express.text({ limit: "10mb" }));
         this.app.use(express.urlencoded({ extended: true }));
+
+        // Enable CORS
+        this.app.use(
+            cors({
+                origin: ["http://localhost:3001"],
+                methods: [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "DELETE",
+                    "PATCH",
+                    "HEAD",
+                    "OPTIONS",
+                ],
+            }),
+        );
+
+        // Sanitize input to prevent XSS attacks
+        this.app.use(sanitizeMiddleware);
+
+        // Set Helmet to secure HTTP headers
+        this.app.use(helmet());
+
+        // Rate limiting requests
+        this.app.use("/api", rateLimiter);
+
+        // Prevent HTTP Parameter Pollution (HPP) attacks
+        this.app.use(
+            hpp({
+                // Parameters whitelist
+                whitelist: [],
+            }),
+        );
     }
 
     private initializeRoutes() {

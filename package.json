@@ -16,7 +16,9 @@
     "description": "",
     "devDependencies": {
         "@eslint/js": "^9.32.0",
+        "@types/cors": "^2.8.19",
         "@types/express": "^5.0.3",
+        "@types/hpp": "^0.2.6",
         "@types/jest": "^30.0.0",
         "@types/node": "^24.1.0",
         "eslint": "^9.32.0",
@@ -29,7 +31,13 @@
         "typescript-eslint": "^8.38.0"
     },
     "dependencies": {
+        "cors": "^2.8.5",
         "dotenv": "^17.2.1",
-        "express": "^5.1.0"
+        "express": "^5.1.0",
+        "express-rate-limit": "^8.0.1",
+        "helmet": "^8.1.0",
+        "hpp": "^0.2.3",
+        "lodash": "^4.17.21",
+        "xss": "^1.0.15"
     }
 }
