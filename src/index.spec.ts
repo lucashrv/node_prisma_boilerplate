@@ -1,3 +1,5 @@
+import { startServer } from "@/server";
+
 it("Should sum", () => {
-    expect(2 + 2).toBe(4);
+    expect(startServer()).toBe("Server is starting...");
 });

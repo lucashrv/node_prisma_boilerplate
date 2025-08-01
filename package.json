@@ -5,7 +5,8 @@
     "type": "module",
     "scripts": {
         "dev": "tsx watch src/server.ts",
-        "build": "npx tsc",
+        "build": "tsc",
+        "start": "node dist/server.js",
         "test": "jest --passWithNoTests",
         "test:watch": "jest --watch"
     },

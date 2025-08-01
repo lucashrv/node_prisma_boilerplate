@@ -7,7 +7,7 @@
 
         // Environment Settings
         // See also https://aka.ms/tsconfig/module
-        "module": "commonjs",
+        "module": "es2022",
         "target": "ES2023",
         // For nodejs:
         "lib": ["ES2023", "DOM"],
@@ -38,7 +38,11 @@
         "isolatedModules": true,
         "noUncheckedSideEffectImports": true,
         "moduleDetection": "force",
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "paths": {
+            "@/*": ["*"]
+        },
+        "baseUrl": "./src"
     },
     "include": ["src/**/*.ts", "src/**/*.js"],
     "exclude": ["node_modules", "dist", "coverage"]
