@@ -6,6 +6,7 @@ import helmet from "helmet";
 import rateLimiter from "./middlewares/rateLimiter";
 import hpp from "hpp";
 import globalErrorHandling from "@/middlewares/globalErrorHandling";
+import routeNotFound from "@/middlewares/routeNotFound";
 
 config();
 
@@ -56,15 +57,18 @@ export default class App {
                 whitelist: [],
             }),
         );
-
-        // Global error handling
-        this.app.use(globalErrorHandling);
     }
 
     private initializeRoutes() {
         this.app.get("/", (req, res) => {
             res.send("Hello World");
         });
+
+        // Route not found 404
+        this.app.use(routeNotFound);
+
+        // Global error handling
+        this.app.use(globalErrorHandling);
     }
 
     public start(port: number) {

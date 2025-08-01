@@ -24,7 +24,18 @@ export default function sanitizeMiddleware(
     next: NextFunction,
 ) {
     if (req.body) req.body = sanitizeInput(req.body);
-    if (req.query) req.query = sanitizeInput(req.query);
-    if (req.params) req.params = sanitizeInput(req.params);
+
+    if (req.query) {
+        Object.keys(req.query).forEach((key) => {
+            req.query[key] = sanitizeInput(req.query[key]);
+        });
+    }
+
+    if (req.params) {
+        Object.keys(req.params).forEach((key) => {
+            req.params[key] = sanitizeInput(req.params[key]);
+        });
+    }
+
     next();
 }
