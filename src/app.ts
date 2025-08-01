@@ -5,6 +5,7 @@ import sanitizeMiddleware from "@/middlewares/sanitize";
 import helmet from "helmet";
 import rateLimiter from "./middlewares/rateLimiter";
 import hpp from "hpp";
+import globalErrorHandling from "@/middlewares/globalErrorHandling";
 
 config();
 
@@ -55,6 +56,9 @@ export default class App {
                 whitelist: [],
             }),
         );
+
+        // Global error handling
+        this.app.use(globalErrorHandling);
     }
 
     private initializeRoutes() {
