@@ -7,14 +7,17 @@ import rateLimiter from "./middlewares/rateLimiter";
 import hpp from "hpp";
 import globalErrorHandling from "@/middlewares/globalErrorHandling";
 import routeNotFound from "@/middlewares/routeNotFound";
+import IndexRoutes from "./routes/routes";
 
 config();
 
 export default class App {
     private app: Application;
+    private routes: IndexRoutes;
 
     constructor() {
         this.app = express();
+        this.routes = new IndexRoutes();
         this.initializeMiddlewares();
         this.initializeRoutes();
     }
@@ -60,9 +63,8 @@ export default class App {
     }
 
     private initializeRoutes() {
-        this.app.get("/", (req, res) => {
-            res.send("Hello World");
-        });
+        // Initialize routes
+        this.app.use("/api", this.routes.init());
 
         // Route not found 404
         this.app.use(routeNotFound);
