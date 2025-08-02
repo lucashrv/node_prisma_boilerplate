@@ -64,7 +64,7 @@ export default class App {
 
     private initializeRoutes() {
         // Initialize routes
-        this.app.use("/api", this.routes.init());
+        this.app.use(this.routes.init());
 
         // Route not found 404
         this.app.use(routeNotFound);
