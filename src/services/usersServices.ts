@@ -1,8 +1,9 @@
+import { handleFactory } from "./handlers/handleFactory";
+
 class UsersServices {
     public getAllUsers = async () => {
-        console.log("Fetching all users");
-
-        return "List of users";
+        const users = await handleFactory.getAll("user");
+        return users;
     };
 
     // public getUserById = async () => {

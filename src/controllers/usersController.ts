@@ -9,8 +9,8 @@ class UsersController {
         this.usersServices = new UsersServices();
     }
 
-    public getAll: RequestHandler = catchAsync(async (req, res, next) => {
-        const users = await this.usersServices.getAllUsers(next);
+    public getAll: RequestHandler = catchAsync(async (req, res) => {
+        const users = await this.usersServices.getAllUsers();
         return res.status(200).json({ message: users });
     });
 }
