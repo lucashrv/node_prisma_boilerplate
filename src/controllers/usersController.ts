@@ -1,9 +1,17 @@
 import catchAsync from "@/utils/catchAsync";
-import { Request, Response } from "express";
+import { RequestHandler } from "express";
+import UsersServices from "@/services/usersServices";
 
 class UsersController {
-    public getAll = catchAsync(async (req: Request, res: Response) => {
-        return res.status(200).send("List of users");
+    private usersServices: UsersServices;
+
+    constructor() {
+        this.usersServices = new UsersServices();
+    }
+
+    public getAll: RequestHandler = catchAsync(async (req, res, next) => {
+        const users = await this.usersServices.getAllUsers(next);
+        return res.status(200).json({ message: users });
     });
 }
 

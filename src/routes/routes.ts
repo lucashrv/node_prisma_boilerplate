@@ -1,18 +1,18 @@
 import { Router } from "express";
+
+// Routes
 import UsersRoutes from "./usersRoutes";
 
 class IndexRoutes {
     private router: Router;
-    private usersRoutes: UsersRoutes;
 
     constructor() {
         this.router = Router();
-        this.usersRoutes = new UsersRoutes();
         this.init();
     }
 
     public init() {
-        this.router.use("/api", this.usersRoutes.init());
+        this.router.use("/api", UsersRoutes.init());
 
         return this.router;
     }

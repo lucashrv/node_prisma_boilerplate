@@ -17,4 +17,4 @@ class UsersRoutes {
     }
 }
 
-export default UsersRoutes;
+export default new UsersRoutes();
