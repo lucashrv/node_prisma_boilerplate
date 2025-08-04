@@ -1,4 +1,6 @@
 import { Router } from "express";
+import swaggerUI from "swagger-ui-express";
+import { swaggerDocument } from "@/docs";
 
 // Routes
 import UsersRoutes from "./usersRoutes";
@@ -13,6 +15,13 @@ class IndexRoutes {
 
     public init() {
         this.router.use("/api", UsersRoutes.init());
+
+        // Swagger Route
+        this.router.use(
+            "/api-docs",
+            swaggerUI.serve,
+            swaggerUI.setup(swaggerDocument),
+        );
 
         return this.router;
     }
