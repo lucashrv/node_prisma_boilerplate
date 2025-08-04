@@ -7,8 +7,10 @@ import { NextFunction } from "express-serve-static-core";
 const sendErrorDev = (err: AppError, res: Response) => {
     res.status(err.statusCode).json({
         message: err.message,
+        name: err.name,
         status: err.status,
-        error: err,
+        statusCode: err.statusCode,
+        isOperational: err.isOperational,
         stack: err.stack,
     });
 };
@@ -18,10 +20,11 @@ const sendErrorProd = (err: AppError, req: Request, res: Response) => {
         res.status(err.statusCode).json({
             message: err.message,
             status: err.status,
+            statusCode: err.statusCode,
         });
     } else {
         res.status(500).json({
-            message: "Something went wrong!",
+            message: "Internal Server Error",
             status: "error",
         });
     }
@@ -62,7 +65,6 @@ const globalErrorHandling = (
 
     if (process.env.NODE_ENV === "development") {
         sendErrorDev(err, res);
-        console.log(`error.name: ${err.name}`);
     } else if (process.env.NODE_ENV === "production") {
         let error = { ...err };
         error.message = err.message;
