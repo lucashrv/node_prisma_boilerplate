@@ -17,11 +17,13 @@ class IndexRoutes {
         this.router.use("/api", UsersRoutes.init());
 
         // Swagger Route
-        this.router.use(
-            "/api-docs",
-            swaggerUI.serve,
-            swaggerUI.setup(swaggerDocument),
-        );
+        if (process.env.NODE_ENV === "development") {
+            this.router.use(
+                "/api-docs",
+                swaggerUI.serve,
+                swaggerUI.setup(swaggerDocument),
+            );
+        }
 
         return this.router;
     }
