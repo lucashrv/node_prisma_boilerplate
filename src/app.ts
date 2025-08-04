@@ -8,6 +8,7 @@ import hpp from "hpp";
 import globalErrorHandling from "@/middlewares/globalErrorHandling";
 import routeNotFound from "@/middlewares/routeNotFound";
 import IndexRoutes from "./routes/routes";
+import { expressWinstonLogger } from "./middlewares/expressWinston";
 
 config();
 
@@ -19,7 +20,6 @@ export default class App {
         this.app = express();
         this.routes = new IndexRoutes();
         this.initializeMiddlewares();
-        this.initializeRoutes();
     }
 
     private initializeMiddlewares() {
@@ -60,9 +60,10 @@ export default class App {
                 whitelist: [],
             }),
         );
-    }
 
-    private initializeRoutes() {
+        // Logger for HTTP requests
+        this.app.use(expressWinstonLogger);
+
         // Initialize routes
         this.app.use(this.routes.init());
 

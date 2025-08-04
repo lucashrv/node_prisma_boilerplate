@@ -38,10 +38,12 @@
         "dotenv": "^17.2.1",
         "express": "^5.1.0",
         "express-rate-limit": "^8.0.1",
+        "express-winston": "^4.2.0",
         "helmet": "^8.1.0",
         "hpp": "^0.2.3",
         "lodash": "^4.17.21",
         "swagger-ui-express": "^5.0.1",
+        "winston": "^3.17.0",
         "xss": "^1.0.15"
     }
 }
