@@ -9,15 +9,18 @@ import globalErrorHandling from "@/middlewares/globalErrorHandling";
 import routeNotFound from "@/middlewares/routeNotFound";
 import IndexRoutes from "./routes/routes";
 import { expressWinstonLogger } from "./middlewares/expressWinston";
+import { PrismaClient } from "@prisma/client";
 
 config();
 
 export default class App {
     private app: Application;
     private routes: IndexRoutes;
+    private prisma: PrismaClient;
 
     constructor() {
         this.app = express();
+        this.prisma = new PrismaClient();
         this.routes = new IndexRoutes();
         this.initializeMiddlewares();
     }
@@ -76,6 +79,8 @@ export default class App {
 
     public start(port: number) {
         this.app.listen(port, async () => {
+            await this.prisma.$connect();
+            console.log(`Database connected`);
             console.log(`Server started`);
         });
     }
