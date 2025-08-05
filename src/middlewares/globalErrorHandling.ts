@@ -26,33 +26,24 @@ const sendErrorProd = (err: AppError, req: Request, res: Response) => {
         res.status(500).json({
             message: "Internal Server Error",
             status: "error",
+            statusCode: 500,
         });
     }
 };
 
-const handleCastErrorDB = (err: any) => {
-    const message = `Invalid ${err.path}: ${err.value}.`;
-    return new AppError(message, 400);
+const handleErrors = {
+    handleJWTError: () => new AppError("Token inválido", 401),
+    handleJWTExpiredError: () =>
+        new AppError("Token expirado, faça login novamente!", 401),
+    PrismaClientInitializationError: () =>
+        new AppError("Erro ao inicializar o Prisma", 400),
+    prismaClientKnownRequestError: () =>
+        new AppError("Erro na solicitação do Prisma", 400),
+    PrismaClientRustPanicError: () =>
+        new AppError("Erro interno do Prisma", 500),
+    PrismaClientValidationError: () =>
+        new AppError("Erro de validação do Prisma: ", 400),
 };
-
-const handleDuplicateFieldsDB = (err: any) => {
-    const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
-
-    const message = `Duplicate field value: ${value}. Please use another value!`;
-    return new AppError(message, 400);
-};
-
-const handleValidationErrorDB = (err: any) => {
-    const errors = Object.values(err.errors).map((el: any) => el.message);
-
-    const message = `Invalid input data. ${errors.join(". ")}`;
-    return new AppError(message, 400);
-};
-
-const handleJWTError = () => new AppError("Token inválido", 401);
-
-const handleJWTExpiredError = () =>
-    new AppError("Token expirado, faça login novamente!", 401);
 
 const globalErrorHandling = (
     err: AppError,
@@ -70,11 +61,21 @@ const globalErrorHandling = (
         error.message = err.message;
         error.name = err.name;
 
-        if (error.name === "CastError") error = handleCastErrorDB(error);
-        if (error.name === "ValidationError")
-            error = handleValidationErrorDB(error);
-        if (error.name === "JsonWebTokenError") error = handleJWTError();
-        if (error.name === "TokenExpiredError") error = handleJWTExpiredError();
+        // JWT
+        if (error.name === "JsonWebTokenError")
+            error = handleErrors.handleJWTError();
+        if (error.name === "TokenExpiredError")
+            error = handleErrors.handleJWTExpiredError();
+
+        // Prisma
+        if (error.name === "PrismaClientInitializationError")
+            error = handleErrors.PrismaClientInitializationError();
+        if (error.name === "PrismaClientKnownRequestError")
+            error = handleErrors.prismaClientKnownRequestError();
+        if (error.name === "PrismaClientRustPanicError")
+            error = handleErrors.PrismaClientRustPanicError();
+        if (error.name === "PrismaClientValidationError")
+            error = handleErrors.PrismaClientValidationError();
 
         sendErrorProd(error, req, res);
     }
