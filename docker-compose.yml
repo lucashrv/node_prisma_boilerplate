@@ -1,0 +1,13 @@
+services:
+    postgres:
+        image: bitnami/postgresql:latest
+        ports:
+            - "5433:5432"
+        environment:
+            - POSTGRES_USER=postgresql
+            - POSTGRES_PASSWORD=postgresDB49845621
+            - POSTGRES_DB=prisma
+        volumes:
+            - prisma_pg_data:/bitnami/postgresql
+volumes:
+    prisma_pg_data:
