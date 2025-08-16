@@ -1,9 +1,9 @@
 import { User } from "@prisma/client";
 import { handleServices } from "./handlers/handleServices";
 import { NextFunction } from "express";
-import AppError from "@/utils/appError";
 import bcrypt from "bcrypt";
 import { ICreateUser } from "@/interfaces/users.interface";
+import { BadRequestException } from "./handlers/handleErrors";
 
 class UsersServices {
     public createUser = async (
@@ -13,10 +13,10 @@ class UsersServices {
         const { name, email, password, confirmPassword } = body;
 
         const user = await handleServices.getOne<User>("user", { email });
-        if (user) return next(new AppError("E-mail já cadastrado.", 400));
+        if (user) return next(new BadRequestException("E-mail já cadastrado."));
 
         if (password !== confirmPassword) {
-            return next(new AppError("Senhas não correspondem.", 400));
+            return next(new BadRequestException("Senhas não correspondem."));
         }
 
         const salt = bcrypt.genSaltSync(Number(process.env.BCRYPT_SALT));

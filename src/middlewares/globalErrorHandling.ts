@@ -11,6 +11,7 @@ const sendErrorDev = (err: AppError, res: Response) => {
         status: err.status,
         statusCode: err.statusCode,
         isOperational: err.isOperational,
+        timeStamp: new Date().toISOString(),
         stack: err.stack,
     });
 };
