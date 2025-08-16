@@ -1,23 +1,55 @@
 import { User } from "@prisma/client";
-import { handleFactory } from "./handlers/handleFactory";
-import { redis } from "@/utils/redis";
+import { handleServices } from "./handlers/handleServices";
+import { NextFunction } from "express";
+import AppError from "@/utils/appError";
+import bcrypt from "bcrypt";
+import { ICreateUser } from "@/interfaces/users.interface";
 
 class UsersServices {
+    public createUser = async (
+        body: ICreateUser,
+        next: NextFunction,
+    ): Promise<User | void> => {
+        const { name, email, password, confirmPassword } = body;
+
+        const user = await handleServices.getOne<User>("user", { email });
+        if (user) return next(new AppError("E-mail já cadastrado.", 400));
+
+        if (password !== confirmPassword) {
+            return next(new AppError("Senhas não correspondem.", 400));
+        }
+
+        const salt = bcrypt.genSaltSync(Number(process.env.BCRYPT_SALT));
+        const hash = bcrypt.hashSync(password, salt);
+
+        const newUser = await handleServices.create<User>(
+            "user",
+            {
+                name,
+                email,
+                password: hash,
+            },
+            {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    createdAt: true,
+                    updatedAt: true,
+                },
+            },
+        );
+
+        return newUser;
+    };
+
     public getAllUsers = async (): Promise<User[]> => {
-        const usersCache = await redis.get("users-get-all");
-        if (usersCache) return JSON.parse(usersCache);
-
-        const users = await handleFactory.getAll("user");
-
-        await redis.set("users-get-all", JSON.stringify(users), "EX", 60 * 10);
+        const users = await handleServices.getAll<User>("user");
 
         return users;
     };
 
     // public getUserById = async () => {
-    // };
-
-    // public createUser = async () => {
     // };
 
     // public updateUser = async () => {
