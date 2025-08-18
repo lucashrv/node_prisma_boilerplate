@@ -2,7 +2,7 @@ import { User } from "@prisma/client";
 import { handleServices } from "./handlers/handleServices";
 import { NextFunction } from "express";
 import bcrypt from "bcrypt";
-import { ICreateUser } from "@/interfaces/users.interface";
+import { ICreateUser, UserNoPassword } from "@/interfaces/users.interface";
 import {
     BadRequestException,
     NotFoundException,
@@ -47,13 +47,17 @@ class UsersServices {
     };
 
     public getAllUsers = async (): Promise<User[]> => {
-        const users = await handleServices.getAll<User>("user");
+        const users = await handleServices.getAll<User>("user", {
+            select: UserNoPassword,
+        });
 
         return users;
     };
 
     public getUserById = async (id: string, next: NextFunction) => {
-        const user = handleServices.getOneById<User>("user", +id);
+        const user = await handleServices.getOneById<User>("user", +id, {
+            select: UserNoPassword,
+        });
 
         if (!user) return next(new NotFoundException("Usuário não encontrado"));
 

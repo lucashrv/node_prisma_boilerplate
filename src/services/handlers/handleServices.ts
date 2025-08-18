@@ -6,12 +6,12 @@ const prisma = new PrismaClient();
 
 type ModelName = keyof PrismaClient;
 
-const getAll = async <T>(model: ModelName): Promise<T[]> => {
+const getAll = async <T>(model: ModelName, options?: object): Promise<T[]> => {
     const modelCache = await redis.get(`${model.toString()}:get-all`);
 
     if (modelCache) return JSON.parse(modelCache);
 
-    const getAll = await (prisma[model] as any).findMany();
+    const getAll = await (prisma[model] as any).findMany(options);
 
     await redis.set(
         `${model.toString()}:get-all`,
@@ -26,11 +26,13 @@ const getAll = async <T>(model: ModelName): Promise<T[]> => {
 const getOneById = async <T>(
     model: ModelName,
     id: string | number,
+    options?: object,
 ): Promise<T> => {
     const getOneById = await (prisma[model] as any).findUnique({
         where: {
             id,
         },
+        ...options,
     });
 
     return getOneById;
