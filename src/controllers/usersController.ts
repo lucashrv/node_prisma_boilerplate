@@ -18,6 +18,11 @@ class UsersController {
         const users = await this.usersServices.getAllUsers();
         return res.status(200).json(users);
     });
+
+    public getById: RequestHandler = catchAsync(async (req, res, next) => {
+        const user = await this.usersServices.getUserById(req.params.id!, next);
+        return res.status(200).json(user);
+    });
 }
 
 export default UsersController;

@@ -3,7 +3,10 @@ import { handleServices } from "./handlers/handleServices";
 import { NextFunction } from "express";
 import bcrypt from "bcrypt";
 import { ICreateUser } from "@/interfaces/users.interface";
-import { BadRequestException } from "./handlers/handleErrors";
+import {
+    BadRequestException,
+    NotFoundException,
+} from "./handlers/handleErrors";
 
 class UsersServices {
     public createUser = async (
@@ -19,7 +22,7 @@ class UsersServices {
             return next(new BadRequestException("Senhas não correspondem."));
         }
 
-        const salt = bcrypt.genSaltSync(Number(process.env.BCRYPT_SALT));
+        const salt = bcrypt.genSaltSync(+process.env.BCRYPT_SALT!);
         const hash = bcrypt.hashSync(password, salt);
 
         const newUser = await handleServices.create<User>(
@@ -49,8 +52,13 @@ class UsersServices {
         return users;
     };
 
-    // public getUserById = async () => {
-    // };
+    public getUserById = async (id: string, next: NextFunction) => {
+        const user = handleServices.getOneById<User>("user", +id);
+
+        if (!user) return next(new NotFoundException("Usuário não encontrado"));
+
+        return user;
+    };
 
     // public updateUser = async () => {
     // };

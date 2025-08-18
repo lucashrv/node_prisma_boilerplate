@@ -13,6 +13,7 @@ class UsersRoutes {
     public init() {
         this.router.post("/user", this.usersController.create);
         this.router.get("/users", this.usersController.getAll);
+        this.router.get("/user/:id", this.usersController.getById);
 
         return this.router;
     }

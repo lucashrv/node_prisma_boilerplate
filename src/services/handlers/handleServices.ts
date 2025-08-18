@@ -23,7 +23,10 @@ const getAll = async <T>(model: ModelName): Promise<T[]> => {
     return getAll;
 };
 
-const getOneById = async <T>(model: ModelName, id: string): Promise<T> => {
+const getOneById = async <T>(
+    model: ModelName,
+    id: string | number,
+): Promise<T> => {
     const getOneById = await (prisma[model] as any).findUnique({
         where: {
             id,
