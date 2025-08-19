@@ -23,6 +23,14 @@ class UsersController {
         const user = await this.usersServices.getUserById(req.params.id!, next);
         return res.status(200).json(user);
     });
+
+    public getByEmail: RequestHandler = catchAsync(async (req, res, next) => {
+        const user = await this.usersServices.getUserByEmail(
+            req.params.email!,
+            next,
+        );
+        return res.status(200).json(user);
+    });
 }
 
 export default UsersController;

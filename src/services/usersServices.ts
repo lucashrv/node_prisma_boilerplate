@@ -64,6 +64,20 @@ class UsersServices {
         return user;
     };
 
+    public getUserByEmail = async (email: string, next: NextFunction) => {
+        const user = await handleServices.getOne<User>(
+            "user",
+            { email },
+            {
+                select: UserNoPassword,
+            },
+        );
+
+        if (!user) return next(new NotFoundException("Usuário não encontrado"));
+
+        return user;
+    };
+
     // public updateUser = async () => {
     // };
 
