@@ -14,7 +14,7 @@ import jwt from "jsonwebtoken";
 
 class UsersServices {
     public createUser = async (body: ICreateUser): Promise<User | void> => {
-        const { name, email, password, confirmPassword } = body;
+        const { name, email, password, confirmPassword, role, photoUrl } = body;
 
         const user = await handleServices.getOne<User>("user", { email });
 
@@ -32,6 +32,8 @@ class UsersServices {
                 name,
                 email,
                 password: hash,
+                role: role || "USER",
+                photoUrl: photoUrl || "default_photo_url",
             },
             {
                 select: {

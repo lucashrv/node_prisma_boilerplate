@@ -8,6 +8,8 @@ export const createUserSchema: Schema = {
             email: z.email(),
             password: z.string().min(6),
             confirmPassword: z.string().min(6),
+            role: z.enum(["USER", "ADMIN"]).optional(),
+            photoUrl: z.string().optional(),
         })
         .refine((data) => data.password === data.confirmPassword, {
             message: "Senhas não coincidem",
@@ -19,5 +21,11 @@ export const loginUserSchema: Schema = {
     bodySchema: z.strictObject({
         email: z.email(),
         password: z.string().min(6),
+    }),
+};
+
+export const emailParamSchema: Schema = {
+    paramsSchema: z.strictObject({
+        email: z.email(),
     }),
 };
