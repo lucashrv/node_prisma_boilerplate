@@ -1,7 +1,7 @@
 import UsersController from "@/controllers/usersController";
-import { zodValidation } from "@/middlewares/zodValidation";
-import { createUserSchema } from "@/schemas/usersSchema";
 import { Router } from "express";
+import { zodValidation } from "@/middlewares/zodValidation";
+import { createUserSchema, loginUserSchema } from "@/schemas/usersSchema";
 
 class UsersRoutes {
     private router: Router;
@@ -14,9 +14,14 @@ class UsersRoutes {
 
     public init() {
         this.router.post(
-            "/user",
+            "/user/signup",
             zodValidation(createUserSchema),
             this.usersController.create,
+        );
+        this.router.post(
+            "/user/login",
+            zodValidation(loginUserSchema),
+            this.usersController.login,
         );
         this.router.get("/users", this.usersController.getAll);
         this.router.get("/user/id/:id", this.usersController.getById);

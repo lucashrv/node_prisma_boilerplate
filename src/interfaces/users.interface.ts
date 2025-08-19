@@ -4,6 +4,11 @@ export interface ICreateUser extends User {
     confirmPassword: string;
 }
 
+export interface ILoginUser {
+    email: string;
+    password: string;
+}
+
 export const UserNoPassword = {
     id: true,
     name: true,

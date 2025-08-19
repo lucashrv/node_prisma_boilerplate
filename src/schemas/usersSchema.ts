@@ -14,3 +14,10 @@ export const createUserSchema: Schema = {
             path: ["confirmPassword"],
         }),
 };
+
+export const loginUserSchema: Schema = {
+    bodySchema: z.strictObject({
+        email: z.email(),
+        password: z.string().min(6),
+    }),
+};
