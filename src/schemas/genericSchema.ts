@@ -1,5 +1,8 @@
+import { Schema } from "@/middlewares/zodValidation";
 import { z } from "zod";
 
-export const idSchema = z.object({
-    id: z.string(),
-});
+export const idSchema: Schema = {
+    paramsSchema: z.strictObject({
+        id: z.string(),
+    }),
+};
