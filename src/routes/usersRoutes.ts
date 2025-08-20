@@ -1,12 +1,13 @@
 import UsersController from "@/controllers/usersController";
 import { Router } from "express";
 import { zodValidation } from "@/middlewares/zodValidation";
+import { validateToken } from "@/middlewares/validateToken";
+import { idParamSchema } from "@/schemas/genericSchema";
 import {
     createUserSchema,
     emailParamSchema,
     loginUserSchema,
 } from "@/schemas/usersSchema";
-import { idParamSchema } from "@/schemas/genericSchema";
 
 class UsersRoutes {
     private router: Router;
@@ -18,6 +19,7 @@ class UsersRoutes {
     }
 
     public init() {
+        // Public Routes
         this.router.post(
             "/user/signup",
             zodValidation(createUserSchema),
@@ -28,14 +30,18 @@ class UsersRoutes {
             zodValidation(loginUserSchema),
             this.usersController.login,
         );
-        this.router.get("/users", this.usersController.getAll);
+
+        // Private Routes
+        this.router.get("/users", validateToken, this.usersController.getAll);
         this.router.get(
             "/user/id/:id",
+            validateToken,
             zodValidation(idParamSchema),
             this.usersController.getById,
         );
         this.router.get(
             "/user/email/:email",
+            validateToken,
             zodValidation(emailParamSchema),
             this.usersController.getByEmail,
         );
