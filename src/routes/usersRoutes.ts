@@ -8,6 +8,7 @@ import {
     emailParamSchema,
     loginUserSchema,
 } from "@/schemas/usersSchema";
+import { permissions } from "@/middlewares/permissionsVerify";
 
 class UsersRoutes {
     private router: Router;
@@ -31,17 +32,24 @@ class UsersRoutes {
             this.usersController.login,
         );
 
-        // Private Routes
-        this.router.get("/users", validateToken, this.usersController.getAll);
+        // Private Routes ADMIN
+        this.router.get(
+            "/users",
+            validateToken,
+            permissions(["ADMIN"]),
+            this.usersController.getAll,
+        );
         this.router.get(
             "/user/id/:id",
             validateToken,
+            permissions(["ADMIN"]),
             zodValidation(idParamSchema),
             this.usersController.getById,
         );
         this.router.get(
             "/user/email/:email",
             validateToken,
+            permissions(["ADMIN"]),
             zodValidation(emailParamSchema),
             this.usersController.getByEmail,
         );

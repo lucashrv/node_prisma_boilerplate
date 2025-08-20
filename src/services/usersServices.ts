@@ -60,9 +60,18 @@ class UsersServices {
         const checkPassword = await bcrypt.compare(password, user.password);
         if (!checkPassword) throw new BadRequestException("Senha inválida");
 
-        const token = jwt.sign({ id: user.id }, env.JWT_SECRET!, {
-            expiresIn: "3d",
-        });
+        const token = jwt.sign(
+            {
+                id: user.id,
+                email: user.email,
+                role: user.role,
+                name: user.name,
+            },
+            env.JWT_SECRET!,
+            {
+                expiresIn: "3d",
+            },
+        );
 
         return token;
     };

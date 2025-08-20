@@ -1,4 +1,5 @@
 import { env } from "@/schemas/zodSchema";
+import { JwtUserPayload } from "@/types/express";
 import { RequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
@@ -13,7 +14,7 @@ export const validateToken: RequestHandler = (req, res, next) => {
                 .status(StatusCodes.UNAUTHORIZED)
                 .json({ message: "Acesso negado!" });
 
-        const verifyToken = jwt.verify(token, env.JWT_SECRET);
+        const verifyToken = jwt.verify(token, env.JWT_SECRET) as JwtUserPayload;
 
         req.connectedUser = verifyToken;
 
