@@ -1,4 +1,5 @@
 import { getUsersDoc } from "./users.doc";
+import { env } from "@/schemas/zodSchema";
 
 export const swaggerDocument = {
     openapi: "3.0.1",
@@ -9,7 +10,7 @@ export const swaggerDocument = {
     },
     servers: [
         {
-            url: `http://localhost:${process.env.PORT || 3000}`,
+            url: `http://localhost:${env.PORT || 3000}`,
         },
     ],
     apis: ["./src/routes/*.ts"],

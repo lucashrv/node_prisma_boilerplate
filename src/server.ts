@@ -1,6 +1,7 @@
 import App from "@/app";
+import { env } from "@/schemas/zodSchema";
 
-const PORT = process.env.PORT || 3000;
+const PORT = env.PORT || 3000;
 
 const app = new App();
 

@@ -1,16 +1,17 @@
+import { env } from "@/schemas/zodSchema";
 import expressWinston from "express-winston";
 import { transports, format } from "winston";
 
 const { combine, printf, colorize, timestamp } = format;
 
-const isProd = process.env.NODE_ENV === "production";
+const isProd = env.NODE_ENV === "production";
 
 const loggerFormat = printf(
     ({ level, message, timestamp }) => `[${timestamp}] ${level}: ${message}`,
 );
 
 export const expressWinstonLogger = expressWinston.logger({
-    level: isProd ? "info" : process.env.LOG_LEVEL || "debug",
+    level: isProd ? "info" : env.LOG_LEVEL || "debug",
     transports: [
         new transports.Console({
             level: isProd ? "error" : "debug",

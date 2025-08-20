@@ -1,3 +1,4 @@
+import { env } from "@/schemas/zodSchema";
 import winston from "winston";
 
 const { combine, printf, colorize, timestamp, errors, json } = winston.format;
@@ -7,10 +8,7 @@ const customFormat = printf(({ level, message, timestamp, stack }) => {
 });
 
 export const logger = winston.createLogger({
-    level:
-        process.env.NODE_ENV === "production"
-            ? "info"
-            : process.env.LOG_LEVEL || "debug",
+    level: env.NODE_ENV === "production" ? "info" : env.LOG_LEVEL || "debug",
     format: combine(timestamp(), errors({ stack: true }), json()),
     transports: [
         new winston.transports.Console({

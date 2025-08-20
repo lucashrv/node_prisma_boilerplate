@@ -11,6 +11,7 @@ import {
     NotFoundException,
 } from "./handlers/handleErrors";
 import jwt from "jsonwebtoken";
+import { env } from "@/schemas/zodSchema";
 
 class UsersServices {
     public createUser = async (body: ICreateUser): Promise<User | void> => {
@@ -23,7 +24,7 @@ class UsersServices {
             throw new BadRequestException("Senhas não correspondem.");
         }
 
-        const salt = bcrypt.genSaltSync(+process.env.BCRYPT_SALT!);
+        const salt = bcrypt.genSaltSync(+env.BCRYPT_SALT!);
         const hash = bcrypt.hashSync(password, salt);
 
         const newUser = await handleServices.create<User>(
@@ -59,7 +60,7 @@ class UsersServices {
         const checkPassword = await bcrypt.compare(password, user.password);
         if (!checkPassword) throw new BadRequestException("Senha inválida");
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET!, {
+        const token = jwt.sign({ id: user.id }, env.JWT_SECRET!, {
             expiresIn: "3d",
         });
 

@@ -3,6 +3,7 @@
 import { Request, Response } from "express";
 import AppError from "@/utils/appError";
 import { NextFunction } from "express-serve-static-core";
+import { env } from "@/schemas/zodSchema";
 
 const sendErrorDev = (err: AppError, res: Response) => {
     res.status(err.statusCode).json({
@@ -55,9 +56,9 @@ const globalErrorHandling = (
     err.statusCode = err.statusCode || 500;
     err.status = err.status || "error";
 
-    if (process.env.NODE_ENV === "development") {
+    if (env.NODE_ENV === "development") {
         sendErrorDev(err, res);
-    } else if (process.env.NODE_ENV === "production") {
+    } else if (env.NODE_ENV === "production") {
         let error = { ...err };
         error.message = err.message;
         error.name = err.name;

@@ -4,6 +4,7 @@ import { swaggerDocument } from "@/docs";
 
 // Routes
 import UsersRoutes from "./usersRoutes";
+import { env } from "@/schemas/zodSchema";
 
 class IndexRoutes {
     private router: Router;
@@ -17,7 +18,7 @@ class IndexRoutes {
         this.router.use("/api", UsersRoutes.init());
 
         // Swagger Route
-        if (process.env.NODE_ENV === "development") {
+        if (env.NODE_ENV === "development") {
             this.router.use(
                 "/api-docs",
                 swaggerUI.serve,

@@ -1,3 +1,4 @@
+import { env } from "@/schemas/zodSchema";
 import { RequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
@@ -12,7 +13,7 @@ export const validateToken: RequestHandler = (req, res, next) => {
                 .status(StatusCodes.UNAUTHORIZED)
                 .json({ message: "Acesso negado!" });
 
-        const verifyToken = jwt.verify(token, process.env.JWT_SECRET!);
+        const verifyToken = jwt.verify(token, env.JWT_SECRET);
 
         req.connectedUser = verifyToken;
 
