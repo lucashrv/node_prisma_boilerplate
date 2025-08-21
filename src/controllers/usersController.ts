@@ -36,4 +36,14 @@ export class UsersController {
         const user = await this.usersServices.getUserByEmail(req.params.email!);
         return res.status(200).json(user);
     });
+
+    public update: RequestHandler = catchAsync(async (req, res) => {
+        const user = await this.usersServices.updateUser(
+            req.body,
+            +req.params.id!,
+        );
+        return res
+            .status(200)
+            .json({ message: "Usuário atualizado com sucesso", data: user });
+    });
 }

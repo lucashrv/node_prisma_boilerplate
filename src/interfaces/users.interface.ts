@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { Role, User } from "@prisma/client";
 
 export interface ICreateUser extends User {
     confirmPassword: string;
@@ -7,6 +7,14 @@ export interface ICreateUser extends User {
 export interface ILoginUser {
     email: string;
     password: string;
+}
+
+export interface IUpdateUser {
+    name: string;
+    email: string;
+    role: Role;
+    photoUrl: string;
+    isActive: boolean;
 }
 
 export const UserNoPassword = {

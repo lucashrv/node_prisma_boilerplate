@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import {
     ICreateUser,
     ILoginUser,
+    IUpdateUser,
     UserNoPassword,
 } from "@/interfaces/users.interface";
 import {
@@ -13,8 +14,17 @@ import {
 import jwt from "jsonwebtoken";
 import { env } from "@/schemas/zodSchema";
 
-export class UsersServices {
-    public createUser = async (body: ICreateUser): Promise<User | void> => {
+export interface IUserServices {
+    createUser(body: ICreateUser): Promise<User>;
+    login(body: ILoginUser): Promise<string>;
+    getAllUsers(): Promise<User[]>;
+    getUserById(id: string): Promise<User>;
+    getUserByEmail(email: string): Promise<User>;
+    updateUser(body: IUpdateUser, id: number): Promise<User>;
+}
+
+export class UsersServices implements IUserServices {
+    public createUser = async (body: ICreateUser) => {
         const { name, email, password, confirmPassword, role, photoUrl } = body;
 
         const user = await handleServices.getOne<User>("user", { email });
@@ -50,7 +60,7 @@ export class UsersServices {
         return newUser;
     };
 
-    public login = async (body: ILoginUser): Promise<string | void> => {
+    public login = async (body: ILoginUser) => {
         const { email, password } = body;
 
         const user = await handleServices.getOne<User>("user", { email });
@@ -76,7 +86,7 @@ export class UsersServices {
         return token;
     };
 
-    public getAllUsers = async (): Promise<User[]> => {
+    public getAllUsers = async () => {
         const users = await handleServices.getAll<User>("user", {
             select: UserNoPassword,
         });
@@ -108,7 +118,34 @@ export class UsersServices {
         return user;
     };
 
-    // public updateUser = async () => {};
+    public updateUser = async (body: IUpdateUser, id: number) => {
+        const { name, email, photoUrl, role, isActive } = body;
+
+        const user = await handleServices.getOneById<User>("user", id);
+        if (!user) throw new NotFoundException("Usuário não encontrado");
+
+        if (email !== user.email) {
+            const emailExists = await handleServices.getOne<User>("user", {
+                email,
+            });
+            if (emailExists)
+                throw new BadRequestException("Email já cadastrado");
+        }
+
+        const update = (await handleServices.prisma.user.update({
+            where: { id },
+            data: {
+                name,
+                email,
+                photoUrl,
+                role,
+                isActive,
+            },
+            select: UserNoPassword,
+        })) as User;
+
+        return update;
+    };
 
     // public deleteUser = async () => {
     // };

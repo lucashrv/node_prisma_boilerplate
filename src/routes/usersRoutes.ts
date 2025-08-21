@@ -7,6 +7,7 @@ import {
     createUserSchema,
     emailParamSchema,
     loginUserSchema,
+    updateSchema,
 } from "@/schemas/usersSchema";
 import { UsersServices } from "@/services/usersServices";
 import { UsersController } from "@/controllers/usersController";
@@ -55,6 +56,13 @@ class UsersRoutes {
             permissions(["ADMIN"]),
             zodValidation(emailParamSchema),
             this.usersController.getByEmail,
+        );
+        this.router.put(
+            "/user/:id",
+            validateToken,
+            permissions(["ADMIN"]),
+            zodValidation(updateSchema),
+            this.usersController.update,
         );
 
         return this.router;

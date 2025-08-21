@@ -29,3 +29,16 @@ export const emailParamSchema: Schema = {
         email: z.email(),
     }),
 };
+
+export const updateSchema: Schema = {
+    paramsSchema: z.strictObject({
+        id: z.string(),
+    }),
+    bodySchema: z.strictObject({
+        name: z.string(),
+        email: z.email(),
+        role: z.enum(["USER", "ADMIN"]).default("USER"),
+        photoUrl: z.string(),
+        isActive: z.boolean(),
+    }),
+};

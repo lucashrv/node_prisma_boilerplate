@@ -67,6 +67,7 @@ const create = async <T>(
 };
 
 export const handleServices = {
+    prisma,
     getAll,
     getOneById,
     getOne,
