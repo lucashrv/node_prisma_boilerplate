@@ -13,7 +13,7 @@ import {
 import jwt from "jsonwebtoken";
 import { env } from "@/schemas/zodSchema";
 
-class UsersServices {
+export class UsersServices {
     public createUser = async (body: ICreateUser): Promise<User | void> => {
         const { name, email, password, confirmPassword, role, photoUrl } = body;
 
@@ -108,11 +108,8 @@ class UsersServices {
         return user;
     };
 
-    // public updateUser = async () => {
-    // };
+    // public updateUser = async () => {};
 
     // public deleteUser = async () => {
     // };
 }
-
-export default UsersServices;

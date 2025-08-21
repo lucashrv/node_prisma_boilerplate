@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { Request, Response } from "express";
-import AppError from "@/utils/appError";
+import { AppError } from "@/utils/appError";
 import { NextFunction } from "express-serve-static-core";
 import { env } from "@/schemas/zodSchema";
 

@@ -1,4 +1,4 @@
-import AppError from "@/utils/appError";
+import { AppError } from "@/utils/appError";
 import { NextFunction, Request, Response } from "express";
 
 const routeNotFound = (req: Request, res: Response, next: NextFunction) => {

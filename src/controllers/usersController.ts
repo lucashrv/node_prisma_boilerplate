@@ -1,13 +1,9 @@
-import catchAsync from "@/utils/catchAsync";
+import { catchAsync } from "@/utils/catchAsync";
 import { RequestHandler } from "express";
-import UsersServices from "@/services/usersServices";
+import { UsersServices } from "@/services/usersServices";
 
-class UsersController {
-    private usersServices: UsersServices;
-
-    constructor() {
-        this.usersServices = new UsersServices();
-    }
+export class UsersController {
+    constructor(private usersServices: UsersServices) {}
 
     public create: RequestHandler = catchAsync(async (req, res) => {
         const user = await this.usersServices.createUser(req.body);
@@ -41,5 +37,3 @@ class UsersController {
         return res.status(200).json(user);
     });
 }
-
-export default UsersController;

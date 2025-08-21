@@ -1,22 +1,25 @@
-import UsersController from "@/controllers/usersController";
 import { Router } from "express";
 import { zodValidation } from "@/middlewares/zodValidation";
 import { validateToken } from "@/middlewares/validateToken";
+import { permissions } from "@/middlewares/permissionsVerify";
 import { idParamSchema } from "@/schemas/genericSchema";
 import {
     createUserSchema,
     emailParamSchema,
     loginUserSchema,
 } from "@/schemas/usersSchema";
-import { permissions } from "@/middlewares/permissionsVerify";
+import { UsersServices } from "@/services/usersServices";
+import { UsersController } from "@/controllers/usersController";
 
 class UsersRoutes {
     private router: Router;
     private usersController: UsersController;
+    private usersServices: UsersServices;
 
     constructor() {
         this.router = Router();
-        this.usersController = new UsersController();
+        this.usersServices = new UsersServices();
+        this.usersController = new UsersController(this.usersServices);
     }
 
     public init() {
