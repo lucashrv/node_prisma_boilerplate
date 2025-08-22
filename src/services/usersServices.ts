@@ -132,17 +132,18 @@ export class UsersServices implements IUserServices {
                 throw new BadRequestException("Email já cadastrado");
         }
 
-        const update = (await handleServices.prisma.user.update({
-            where: { id },
-            data: {
+        const update = await handleServices.update<User>(
+            "user",
+            id,
+            {
                 name,
                 email,
                 photoUrl,
                 role,
                 isActive,
             },
-            select: UserNoPassword,
-        })) as User;
+            { select: UserNoPassword },
+        );
 
         return update;
     };
