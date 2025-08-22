@@ -64,6 +64,13 @@ class UsersRoutes {
             zodValidation(updateSchema),
             this.usersController.update,
         );
+        this.router.put(
+            "/user/disabled/:id",
+            validateToken,
+            permissions(["ADMIN"]),
+            zodValidation(idParamSchema),
+            this.usersController.disabled,
+        );
 
         return this.router;
     }

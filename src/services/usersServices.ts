@@ -18,7 +18,7 @@ export interface IUserServices {
     createUser(body: ICreateUser): Promise<User>;
     login(body: ILoginUser): Promise<string>;
     getAllUsers(): Promise<User[]>;
-    getUserById(id: string): Promise<User>;
+    getUserById(id: number): Promise<User>;
     getUserByEmail(email: string): Promise<User>;
     updateUser(body: IUpdateUser, id: number): Promise<User>;
 }
@@ -94,7 +94,7 @@ export class UsersServices implements IUserServices {
         return users;
     };
 
-    public getUserById = async (id: string) => {
+    public getUserById = async (id: number) => {
         const user = await handleServices.getOneById<User>("user", +id, {
             select: UserNoPassword,
         });
@@ -148,6 +148,10 @@ export class UsersServices implements IUserServices {
         return update;
     };
 
-    // public deleteUser = async () => {
-    // };
+    public disabledUser = async (id: number) => {
+        // Set User isActive = false
+        const user = await this.getUserById(id);
+
+        return await this.updateUser({ ...user, isActive: false }, id);
+    };
 }

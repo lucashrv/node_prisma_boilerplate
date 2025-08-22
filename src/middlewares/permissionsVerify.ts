@@ -13,13 +13,20 @@ export const permissions = (roles: string[]) => {
         const user = await handleServices.getOneById<User>(
             "user",
             req.connectedUser.id,
-            { select: { role: true } },
+            { select: { role: true, isActive: true } },
         );
 
         if (!user || !roles.includes(user.role)) {
             return res
                 .status(StatusCodes.FORBIDDEN)
-                .json({ message: "Acesso negado" });
+                .json({ message: "Você não possui permissões de acesso" });
+        }
+        console.log(user);
+
+        if (!user.isActive) {
+            return res
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({ message: "Usuário desativado" });
         }
 
         next();

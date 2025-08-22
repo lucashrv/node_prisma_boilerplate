@@ -28,7 +28,7 @@ export class UsersController {
     });
 
     public getById: RequestHandler = catchAsync(async (req, res) => {
-        const user = await this.usersServices.getUserById(req.params.id!);
+        const user = await this.usersServices.getUserById(+req.params.id!);
         return res.status(200).json(user);
     });
 
@@ -45,5 +45,12 @@ export class UsersController {
         return res
             .status(200)
             .json({ message: "Usuário atualizado com sucesso", data: user });
+    });
+
+    public disabled: RequestHandler = catchAsync(async (req, res) => {
+        await this.usersServices.disabledUser(+req.params.id!);
+        return res.status(200).json({
+            message: `Usuário de id: ${+req.params.id!} foi desabilitado`,
+        });
     });
 }
