@@ -10,6 +10,7 @@ import {
 import {
     BadRequestException,
     NotFoundException,
+    UnauthorizedException,
 } from "./handlers/handleErrors";
 import jwt from "jsonwebtoken";
 import { env } from "@/schemas/zodSchema";
@@ -67,6 +68,9 @@ export class UsersServices implements IUserServices {
 
         if (!user) throw new NotFoundException("E-mail inválido");
 
+        if (!user.isActive)
+            throw new UnauthorizedException("Usuário desativado");
+
         const checkPassword = await bcrypt.compare(password, user.password);
         if (!checkPassword) throw new BadRequestException("Senha inválida");
 
@@ -82,6 +86,10 @@ export class UsersServices implements IUserServices {
                 expiresIn: "3d",
             },
         );
+
+        await handleServices.update<User>("user", user.id, {
+            lastLogin: new Date().toISOString(),
+        });
 
         return token;
     };
@@ -151,6 +159,9 @@ export class UsersServices implements IUserServices {
     public disabledUser = async (id: number) => {
         // Set User isActive = false
         const user = await this.getUserById(id);
+
+        if (!user.isActive)
+            throw new BadRequestException("Usuário já desabilitado");
 
         return await this.updateUser({ ...user, isActive: false }, id);
     };

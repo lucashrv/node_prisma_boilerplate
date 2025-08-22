@@ -21,7 +21,6 @@ export const permissions = (roles: string[]) => {
                 .status(StatusCodes.FORBIDDEN)
                 .json({ message: "Você não possui permissões de acesso" });
         }
-        console.log(user);
 
         if (!user.isActive) {
             return res
