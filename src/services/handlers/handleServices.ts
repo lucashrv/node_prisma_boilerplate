@@ -66,10 +66,26 @@ const create = async <T>(
     return create;
 };
 
+const update = async <T>(
+    model: ModelName,
+    id: number,
+    data: object,
+    options?: object,
+): Promise<T> => {
+    const user: Promise<T> = await (prisma[model] as any).update({
+        where: { id },
+        data,
+        ...options,
+    });
+
+    return user;
+};
+
 export const handleServices = {
     prisma,
     getAll,
     getOneById,
     getOne,
     create,
+    update,
 };
