@@ -14,10 +14,12 @@ import {
 } from "./handlers/handleErrors";
 import jwt from "jsonwebtoken";
 import { env } from "@/schemas/zodSchema";
+import { JwtUserPayload } from "@/types/express";
 
 export interface IUserServices {
     createUser(body: ICreateUser): Promise<User>;
     login(body: ILoginUser): Promise<string>;
+    getConnectedUser(connectedUser: JwtUserPayload): Promise<User>;
     getAllUsers(): Promise<User[]>;
     getUserById(id: number): Promise<User>;
     getUserByEmail(email: string): Promise<User>;
@@ -92,6 +94,16 @@ export class UsersServices implements IUserServices {
         });
 
         return token;
+    };
+
+    public getConnectedUser = async (connectedUser: JwtUserPayload) => {
+        const { id } = connectedUser;
+
+        const user = await handleServices.getOneById<User>("user", +id, {
+            select: UserNoPassword,
+        });
+
+        return user;
     };
 
     public getAllUsers = async () => {

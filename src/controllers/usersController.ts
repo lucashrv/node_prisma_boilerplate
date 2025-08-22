@@ -22,6 +22,16 @@ export class UsersController {
         });
     });
 
+    public getConnected: RequestHandler = catchAsync(async (req, res) => {
+        const user = await this.usersServices.getConnectedUser(
+            req.connectedUser!,
+        );
+        return res.status(200).json({
+            message: "Usuário conectado por login",
+            data: user,
+        });
+    });
+
     public getAll: RequestHandler = catchAsync(async (req, res) => {
         const users = await this.usersServices.getAllUsers();
         return res.status(200).json(users);

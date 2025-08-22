@@ -72,6 +72,14 @@ class UsersRoutes {
             this.usersController.disabled,
         );
 
+        // Private Routes USER ADMIN
+        this.router.get(
+            "/user/connected",
+            validateToken,
+            permissions(["USER", "ADMIN"]),
+            this.usersController.getConnected,
+        );
+
         return this.router;
     }
 }
