@@ -6,8 +6,12 @@ import jwt from "jsonwebtoken";
 
 export const validateToken: RequestHandler = (req, res, next) => {
     try {
+        // Bearer Token
         const authHeaders = req.headers["authorization"];
         const token = authHeaders && authHeaders.split(" ")[1];
+
+        // Token Cookie Http-Only and signed
+        // const token = req.signedCookies.token;
 
         if (!token)
             return res

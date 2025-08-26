@@ -13,16 +13,19 @@ enum Role {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  name      String
-  email     String    @unique
-  password  String    @db.VarChar(255)
-  role      Role      @default(USER)
-  lastLogin DateTime?
-  photoUrl  String    @default("default_photo_url")
-  isActive  Boolean   @default(true)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id                   Int       @id @default(autoincrement())
+  name                 String
+  email                String    @unique
+  password             String    @db.VarChar(255)
+  passwordResetToken   String?   @map("password_reset_token")
+  passwordResetExpires DateTime? @map("password_reset_expires")
+  passwordChangedAt    DateTime? @map("password_changed_at")
+  role                 Role      @default(USER)
+  lastLogin            DateTime?
+  photoUrl             String    @default("default_photo_url")
+  isActive             Boolean   @default(true)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 
   @@map("users")
 }

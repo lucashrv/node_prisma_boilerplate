@@ -11,6 +11,7 @@ import IndexRoutes from "./routes/routes";
 import { expressWinstonLogger } from "./middlewares/expressWinston";
 import { PrismaClient } from "@prisma/client";
 import cookieParser from "cookie-parser";
+import { env } from "./schemas/zodSchema";
 
 config();
 
@@ -33,7 +34,7 @@ export default class App {
         this.app.use(express.urlencoded({ extended: true }));
 
         // Cookie Parser
-        this.app.use(cookieParser());
+        this.app.use(cookieParser(env.COOKIE_SECRET));
 
         // Enable CORS
         this.app.use(

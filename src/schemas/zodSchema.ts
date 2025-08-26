@@ -19,6 +19,7 @@ export const envSchema = z
         LOG_LEVEL: z.enum(["info", "error", "debug"]).default("error"),
         REDIS_HOST: z.string().optional(),
         REDIS_PORT: z.string().optional(),
+        COOKIE_SECRET: z.string().min(1, "COOKIE_SECRET is required"),
     })
     .loose();
 

@@ -15,10 +15,11 @@ import {
 import jwt from "jsonwebtoken";
 import { env } from "@/schemas/zodSchema";
 import { JwtUserPayload } from "@/types/express";
+import { Response } from "express";
 
 export interface IUserServices {
     createUser(body: ICreateUser): Promise<User>;
-    login(body: ILoginUser): Promise<string>;
+    login(body: ILoginUser, res?: Response): Promise<string>;
     getConnectedUser(connectedUser: JwtUserPayload): Promise<User>;
     getAllUsers(): Promise<User[]>;
     getUserById(id: number): Promise<User>;
@@ -83,11 +84,22 @@ export class UsersServices implements IUserServices {
                 role: user.role,
                 name: user.name,
             },
-            env.JWT_SECRET!,
+            env.JWT_SECRET,
             {
                 expiresIn: "3d",
             },
         );
+
+        // Token Cookie Http-Only and signed
+        /*
+        res.cookie("token", token, {
+            httpOnly: true,
+            signed: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 1000 * 60 * 60 * 24,
+        });
+        */
 
         await handleServices.update<User>("user", user.id, {
             lastLogin: new Date().toISOString(),
