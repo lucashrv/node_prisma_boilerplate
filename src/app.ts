@@ -10,6 +10,7 @@ import routeNotFound from "@/middlewares/routeNotFound";
 import IndexRoutes from "./routes/routes";
 import { expressWinstonLogger } from "./middlewares/expressWinston";
 import { PrismaClient } from "@prisma/client";
+import cookieParser from "cookie-parser";
 
 config();
 
@@ -30,6 +31,9 @@ export default class App {
         this.app.use(express.json({ limit: "10mb" }));
         this.app.use(express.text({ limit: "10mb" }));
         this.app.use(express.urlencoded({ extended: true }));
+
+        // Cookie Parser
+        this.app.use(cookieParser());
 
         // Enable CORS
         this.app.use(
