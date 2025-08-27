@@ -13,6 +13,17 @@ export class UsersController {
             .json({ message: "Usuário criado com sucesso", data: user });
     });
 
+    public changePassword: RequestHandler = catchAsync(async (req, res) => {
+        const updatePass = await this.usersServices.changePassword(
+            req,
+            +req.params.id!,
+        );
+
+        return res
+            .status(200)
+            .json({ message: "Senha alterada.", data: updatePass });
+    });
+
     public login: RequestHandler = catchAsync(async (req, res) => {
         const token = await this.usersServices.login(req.body);
 

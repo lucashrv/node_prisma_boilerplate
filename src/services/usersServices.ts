@@ -15,10 +15,11 @@ import {
 import jwt from "jsonwebtoken";
 import { env } from "@/schemas/zodSchema";
 import { JwtUserPayload } from "@/types/express";
-import { Response } from "express";
+import { Request, Response } from "express";
 
 export interface IUserServices {
     createUser(body: ICreateUser): Promise<User>;
+    changePassword(req: Request, id: number): Promise<User>;
     login(body: ILoginUser, res?: Response): Promise<string>;
     getConnectedUser(connectedUser: JwtUserPayload): Promise<User>;
     getAllUsers(): Promise<User[]>;
@@ -29,14 +30,11 @@ export interface IUserServices {
 
 export class UsersServices implements IUserServices {
     public createUser = async (body: ICreateUser) => {
-        const { name, email, password, confirmPassword, role, photoUrl } = body;
+        const { name, email, password, role, photoUrl } = body;
 
         const user = await handleServices.getOne<User>("user", { email });
 
         if (user) throw new BadRequestException("E-mail já cadastrado.");
-        if (password !== confirmPassword) {
-            throw new BadRequestException("Senhas não correspondem.");
-        }
 
         const salt = bcrypt.genSaltSync(+env.BCRYPT_SALT!);
         const hash = bcrypt.hashSync(password, salt);
@@ -62,6 +60,46 @@ export class UsersServices implements IUserServices {
         );
 
         return newUser;
+    };
+
+    public changePassword = async (req: Request, id: number) => {
+        const { currentPassword, newPassword } = req.body;
+
+        if (
+            +req.connectedUser!.id !== id &&
+            req.connectedUser?.role !== "ADMIN"
+        ) {
+            throw new UnauthorizedException("Sem permissões de acesso.");
+        }
+
+        const user = await handleServices.getOneById<User>("user", id);
+        if (!user) throw new NotFoundException("Usuário não encontrado.");
+
+        const checkPassword = await bcrypt.compare(
+            currentPassword,
+            user.password,
+        );
+
+        if (!checkPassword)
+            throw new BadRequestException("Senha atual inválida.");
+
+        const salt = bcrypt.genSaltSync(+env.BCRYPT_SALT);
+        const hash = bcrypt.hashSync(newPassword, salt);
+
+        const updatePass = await handleServices.update<User>(
+            "user",
+            id,
+            {
+                password: hash,
+            },
+            {
+                select: {
+                    id: true,
+                    email: true,
+                },
+            },
+        );
+        return updatePass;
     };
 
     public login = async (body: ILoginUser) => {

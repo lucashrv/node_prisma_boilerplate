@@ -3,6 +3,11 @@ import { User } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
+export enum Roles {
+    USER = "USER",
+    ADMIN = "ADMIN",
+}
+
 export const permissions = (roles: string[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         if (!req.connectedUser?.id)

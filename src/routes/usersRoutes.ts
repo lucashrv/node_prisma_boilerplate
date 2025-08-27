@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { zodValidation } from "@/middlewares/zodValidation";
 import { validateToken } from "@/middlewares/validateToken";
-import { permissions } from "@/middlewares/permissionsVerify";
+import { permissions, Roles } from "@/middlewares/permissionsVerify";
 import { idParamSchema } from "@/schemas/genericSchema";
 import {
+    changeUserPassSchema,
     createUserSchema,
     emailParamSchema,
     loginUserSchema,
@@ -40,34 +41,34 @@ class UsersRoutes {
         this.router.get(
             "/users",
             validateToken,
-            permissions(["ADMIN"]),
+            permissions([Roles.ADMIN]),
             this.usersController.getAll,
         );
         this.router.get(
             "/user/id/:id",
             validateToken,
-            permissions(["ADMIN"]),
+            permissions([Roles.ADMIN]),
             zodValidation(idParamSchema),
             this.usersController.getById,
         );
         this.router.get(
             "/user/email/:email",
             validateToken,
-            permissions(["ADMIN"]),
+            permissions([Roles.ADMIN]),
             zodValidation(emailParamSchema),
             this.usersController.getByEmail,
         );
         this.router.put(
             "/user/:id",
             validateToken,
-            permissions(["ADMIN"]),
+            permissions([Roles.ADMIN]),
             zodValidation(updateSchema),
             this.usersController.update,
         );
         this.router.put(
             "/user/disabled/:id",
             validateToken,
-            permissions(["ADMIN"]),
+            permissions([Roles.ADMIN]),
             zodValidation(idParamSchema),
             this.usersController.disabled,
         );
@@ -76,8 +77,15 @@ class UsersRoutes {
         this.router.get(
             "/user/connected",
             validateToken,
-            permissions(["USER", "ADMIN"]),
+            permissions([Roles.USER, Roles.ADMIN]),
             this.usersController.getConnected,
+        );
+        this.router.patch(
+            "/user/change-password/:id",
+            validateToken,
+            permissions([Roles.USER, Roles.ADMIN]),
+            zodValidation(changeUserPassSchema),
+            this.usersController.changePassword,
         );
 
         return this.router;

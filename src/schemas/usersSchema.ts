@@ -11,9 +11,42 @@ export const createUserSchema: Schema = {
             role: z.enum(["USER", "ADMIN"]).optional(),
             photoUrl: z.string().optional(),
         })
-        .refine((data) => data.password === data.confirmPassword, {
-            message: "Senhas não coincidem",
-            path: ["confirmPassword"],
+        .superRefine((data, ctx) => {
+            if (data.password !== data.confirmPassword) {
+                ctx.addIssue({
+                    code: "custom",
+                    message: "As senhas não coincidem.",
+                    path: ["password", "confirmPassword"],
+                });
+            }
+        }),
+};
+
+export const changeUserPassSchema: Schema = {
+    paramsSchema: z.strictObject({
+        id: z.string(),
+    }),
+    bodySchema: z
+        .strictObject({
+            currentPassword: z.string().min(6),
+            newPassword: z.string().min(6),
+            confirmNewPassword: z.string().min(6),
+        })
+        .superRefine((data, ctx) => {
+            if (data.newPassword !== data.confirmNewPassword) {
+                ctx.addIssue({
+                    code: "custom",
+                    message: "As senhas não coincidem.",
+                    path: ["newPassword", "confirmNewPassword"],
+                });
+            }
+            if (data.currentPassword === data.newPassword) {
+                ctx.addIssue({
+                    code: "custom",
+                    message: "Senha atual 'igual' a 'nova'.",
+                    path: ["currentPassword", "newPassword"],
+                });
+            }
         }),
 };
 
