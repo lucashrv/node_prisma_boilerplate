@@ -15,12 +15,18 @@ import {
 import jwt from "jsonwebtoken";
 import { env } from "@/schemas/zodSchema";
 import { JwtUserPayload } from "@/types/express";
-import { Request, Response } from "express";
+import { Request } from "express";
 
 export interface IUserServices {
     createUser(body: ICreateUser): Promise<User>;
     changePassword(req: Request, id: number): Promise<User>;
-    login(body: ILoginUser, res?: Response): Promise<string>;
+    login(
+        body: ILoginUser,
+    ): Promise<{ accessToken: string; refreshToken: string }>;
+    refreshToken(refresh: string): Promise<{
+        newAccessToken: string;
+        newRefreshToken: string;
+    }>;
     getConnectedUser(connectedUser: JwtUserPayload): Promise<User>;
     getAllUsers(): Promise<User[]>;
     getUserById(id: number): Promise<User>;
@@ -116,35 +122,95 @@ export class UsersServices implements IUserServices {
         const checkPassword = await bcrypt.compare(password, user.password);
         if (!checkPassword) throw new BadRequestException("Senha inválida");
 
-        const token = jwt.sign(
+        const payload = {
+            id: user.id,
+            email: user.email,
+            role: user.role,
+            name: user.name,
+        };
+
+        const accessToken = jwt.sign(
             {
-                id: user.id,
-                email: user.email,
-                role: user.role,
-                name: user.name,
+                ...payload,
+                type: "access",
             },
-            env.JWT_SECRET,
+            env.JWT_ACCESS_SECRET,
             {
-                expiresIn: "3d",
+                expiresIn: "60s",
             },
         );
 
-        // Token Cookie Http-Only and signed
-        /*
-        res.cookie("token", token, {
-            httpOnly: true,
-            signed: true,
-            secure: env.NODE_ENV === "production",
-            sameSite: "lax",
-            maxAge: 1000 * 60 * 60 * 24,
-        });
-        */
+        const refreshToken = jwt.sign(
+            {
+                ...payload,
+                type: "refresh",
+            },
+            env.JWT_REFRESH_SECRET,
+            {
+                expiresIn: "1h",
+            },
+        );
 
         await handleServices.update<User>("user", user.id, {
             lastLogin: new Date().toISOString(),
+            refreshToken,
         });
 
-        return token;
+        return { accessToken, refreshToken };
+    };
+
+    public refreshToken = async (refresh: string) => {
+        if (!refresh) throw new UnauthorizedException("Refresh token ausente.");
+
+        const payload = jwt.verify(
+            refresh,
+            env.JWT_REFRESH_SECRET,
+        ) as JwtUserPayload;
+
+        if (payload.type !== "refresh")
+            throw new UnauthorizedException("Tipo de token inválido.");
+
+        const user = await handleServices.getOne<User>("user", {
+            id: payload.id,
+            refreshToken: refresh,
+        });
+
+        if (!user) throw new UnauthorizedException("Token inválido.");
+
+        const newPayload = {
+            id: user.id,
+            email: user.email,
+            role: user.role,
+            name: user.name,
+        };
+
+        const newAccessToken = jwt.sign(
+            {
+                ...newPayload,
+                type: "access",
+            },
+            env.JWT_ACCESS_SECRET,
+            {
+                expiresIn: "60s",
+            },
+        );
+
+        const newRefreshToken = jwt.sign(
+            {
+                ...newPayload,
+                type: "refresh",
+            },
+            env.JWT_REFRESH_SECRET,
+            {
+                expiresIn: "1h",
+            },
+        );
+
+        await handleServices.update<User>("user", user.id, {
+            refreshToken: newRefreshToken,
+        });
+
+        return { newAccessToken, newRefreshToken };
     };
 
     public getConnectedUser = async (connectedUser: JwtUserPayload) => {

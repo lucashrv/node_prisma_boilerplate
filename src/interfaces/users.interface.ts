@@ -26,6 +26,7 @@ export const UserNoPassword = {
     isActive: true,
     lastLogin: true,
     passwordChangedAt: true,
+    refreshToken: true,
     createdAt: true,
     updatedAt: true,
 };

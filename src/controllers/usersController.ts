@@ -29,7 +29,20 @@ export class UsersController {
 
         return res.status(200).json({
             message: "Autenticado do sucesso",
-            token,
+            accessToken: token.accessToken,
+            refreshToken: token.refreshToken,
+        });
+    });
+
+    public refresh: RequestHandler = catchAsync(async (req, res) => {
+        const { refreshToken } = req.body;
+
+        const token = await this.usersServices.refreshToken(refreshToken);
+
+        return res.status(200).json({
+            message: "Autenticado do sucesso",
+            accessToken: token.newAccessToken,
+            refreshToken: token.newRefreshToken,
         });
     });
 

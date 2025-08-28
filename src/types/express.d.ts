@@ -5,6 +5,7 @@ interface JwtUserPayload extends JwtPayload {
     email: string;
     role: string;
     name: string;
+    type: string;
 }
 
 declare global {

@@ -10,15 +10,15 @@ export const validateToken: RequestHandler = (req, res, next) => {
         const authHeaders = req.headers["authorization"];
         const token = authHeaders && authHeaders.split(" ")[1];
 
-        // Token Cookie Http-Only and signed
-        // const token = req.signedCookies.token;
-
         if (!token)
             return res
                 .status(StatusCodes.UNAUTHORIZED)
                 .json({ message: "Acesso negado!" });
 
-        const verifyToken = jwt.verify(token, env.JWT_SECRET) as JwtUserPayload;
+        const verifyToken = jwt.verify(
+            token,
+            env.JWT_ACCESS_SECRET,
+        ) as JwtUserPayload;
 
         req.connectedUser = verifyToken;
 
