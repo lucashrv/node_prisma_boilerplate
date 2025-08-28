@@ -25,8 +25,6 @@ export const UserNoPassword = {
     photoUrl: true,
     isActive: true,
     lastLogin: true,
-    passwordResetToken: true,
-    passwordResetExpires: true,
     passwordChangedAt: true,
     createdAt: true,
     updatedAt: true,

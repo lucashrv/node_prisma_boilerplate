@@ -91,6 +91,7 @@ export class UsersServices implements IUserServices {
             id,
             {
                 password: hash,
+                passwordChangedAt: new Date().toISOString(),
             },
             {
                 select: {
