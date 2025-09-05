@@ -1,12 +1,14 @@
-import { getUsersDoc } from "./users.doc";
 import { env } from "@/schemas/zodSchema";
+
+//Docs
+import { usersDocs } from "./users.doc";
 
 export const swaggerDocument = {
     openapi: "3.0.1",
     info: {
-        title: "API Name",
+        title: "BOILERPLATE",
         version: "1.0.0",
-        description: "Documentation from API",
+        description: "Documentation from BOILERPLATE",
     },
     servers: [
         {
@@ -16,8 +18,6 @@ export const swaggerDocument = {
     apis: ["./src/routes/*.ts"],
     schemas: ["http"],
     paths: {
-        "/api/users": {
-            get: getUsersDoc,
-        },
+        ...usersDocs,
     },
 };

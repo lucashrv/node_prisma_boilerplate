@@ -20,3 +20,9 @@ export const getUsersDoc = {
         },
     },
 };
+
+export const usersDocs = {
+    "/api/users": {
+        get: getUsersDoc,
+    },
+};
