@@ -337,6 +337,88 @@ export const getByEmailUserDoc = {
     },
 };
 
+export const updateUserDoc = {
+    tags: ["Users"],
+    summary: "Atualiza um usuário",
+    security: [{ bearerAuth: [] }],
+    parameters: [
+        {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: {
+                type: "string",
+            },
+            description: "ID do usuário a ser atualizado",
+            example: "1",
+        },
+    ],
+    requestBody: {
+        required: true,
+        content: {
+            "application/json": {
+                schema: {
+                    type: "object",
+                    properties: {
+                        name: { type: "string", example: "User Name" },
+                        email: { type: "string", example: "email@example.com" },
+                        photoUrl: { type: "string", example: "URL DA FOTO" },
+                        role: { type: "string", example: "USER" },
+                        isActive: { type: "string", example: true },
+                    },
+                    required: ["name", "email", "photoUrl", "role", "isActive"],
+                },
+            },
+        },
+    },
+    responses: {
+        200: {
+            description: "Refresh Token gerado",
+            content: {
+                "application/json": {
+                    example: [
+                        {
+                            id: 1,
+                            name: "User Name",
+                            email: "email@example.com",
+                            role: "USER",
+                            photoUrl: "default_photo_url",
+                            isActive: true,
+                            lastLogin: "2025-08-26T02:55:08.829Z",
+                            passwordChangedAt: null,
+                            refreshToken: null,
+                            createdAt: "2025-08-26T02:49:19.000Z",
+                            updatedAt: "2025-08-26T03:14:10.619Z",
+                        },
+                    ],
+                },
+            },
+        },
+        400: {
+            description: "ERROR: Email já cadastrado",
+            content: {
+                "application/json": {
+                    example: {
+                        statusCode: 400,
+                        message: "Email já cadastrado",
+                    },
+                },
+            },
+        },
+        404: {
+            description: "ERROR: Usuário não encontrado",
+            content: {
+                "application/json": {
+                    example: {
+                        statusCode: 404,
+                        message: "Usuário não encontrado",
+                    },
+                },
+            },
+        },
+    },
+};
+
 export const usersDocs = {
     "/api/user/signup": {
         post: signUpUserDoc,
@@ -355,5 +437,8 @@ export const usersDocs = {
     },
     "/api/user/email/{email}": {
         get: getByEmailUserDoc,
+    },
+    "/api/user/{id}": {
+        put: updateUserDoc,
     },
 };
