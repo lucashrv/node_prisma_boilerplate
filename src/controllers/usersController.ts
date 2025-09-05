@@ -62,6 +62,8 @@ export class UsersController {
     });
 
     public getById: RequestHandler = catchAsync(async (req, res) => {
+        console.log(req.params.id);
+
         const user = await this.usersServices.getUserById(+req.params.id!);
         return res.status(200).json(user);
     });

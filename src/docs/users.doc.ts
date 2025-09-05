@@ -42,6 +42,7 @@ export const signUpUserDoc = {
                         email: { type: "string", example: "email@example.com" },
                         password: { type: "string", example: "123456" },
                         confirmPassword: { type: "string", example: "123456" },
+                        role: { type: "string", example: "ADMIN" },
                     },
                     required: ["name", "email", "password", "confirmPassword"],
                 },
@@ -230,6 +231,112 @@ export const refreshTokenUserDoc = {
     },
 };
 
+export const getByIdUserDoc = {
+    tags: ["Users"],
+    summary: "Busca um usuário por ID",
+    security: [{ bearerAuth: [] }],
+    parameters: [
+        {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: {
+                type: "string",
+            },
+            description: "ID do usuário a ser buscado",
+            example: "1",
+        },
+    ],
+    responses: {
+        200: {
+            description: "Busca de usuário por ID",
+            content: {
+                "application/json": {
+                    example: [
+                        {
+                            id: 1,
+                            name: "User Name",
+                            email: "email@example.com",
+                            role: "USER",
+                            photoUrl: "default_photo_url",
+                            isActive: true,
+                            lastLogin: "2025-08-26T02:55:08.829Z",
+                            passwordChangedAt: null,
+                            refreshToken: null,
+                            createdAt: "2025-08-26T02:49:19.000Z",
+                            updatedAt: "2025-08-26T03:14:10.619Z",
+                        },
+                    ],
+                },
+            },
+        },
+        404: {
+            description: "ERROR: Usuário não encontrado",
+            content: {
+                "application/json": {
+                    example: {
+                        statusCode: 404,
+                        message: "Usuário não encontrado",
+                    },
+                },
+            },
+        },
+    },
+};
+
+export const getByEmailUserDoc = {
+    tags: ["Users"],
+    summary: "Busca um usuário por Email",
+    security: [{ bearerAuth: [] }],
+    parameters: [
+        {
+            name: "email",
+            in: "path",
+            required: true,
+            schema: {
+                type: "string",
+            },
+            description: "Email do usuário a ser buscado",
+            example: "email@example.com",
+        },
+    ],
+    responses: {
+        200: {
+            description: "Refresh Token gerado",
+            content: {
+                "application/json": {
+                    example: [
+                        {
+                            id: 1,
+                            name: "User Name",
+                            email: "email@example.com",
+                            role: "USER",
+                            photoUrl: "default_photo_url",
+                            isActive: true,
+                            lastLogin: "2025-08-26T02:55:08.829Z",
+                            passwordChangedAt: null,
+                            refreshToken: null,
+                            createdAt: "2025-08-26T02:49:19.000Z",
+                            updatedAt: "2025-08-26T03:14:10.619Z",
+                        },
+                    ],
+                },
+            },
+        },
+        404: {
+            description: "ERROR: Usuário não encontrado",
+            content: {
+                "application/json": {
+                    example: {
+                        statusCode: 404,
+                        message: "Usuário não encontrado",
+                    },
+                },
+            },
+        },
+    },
+};
+
 export const usersDocs = {
     "/api/user/signup": {
         post: signUpUserDoc,
@@ -242,5 +349,11 @@ export const usersDocs = {
     },
     "/api/users": {
         get: getUsersDoc,
+    },
+    "/api/user/id/{id}": {
+        get: getByIdUserDoc,
+    },
+    "/api/user/email/{email}": {
+        get: getByEmailUserDoc,
     },
 };
