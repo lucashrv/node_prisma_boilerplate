@@ -150,6 +150,85 @@ export const loginUserDoc = {
         },
     },
 };
+export const refreshTokenUserDoc = {
+    tags: ["Users"],
+    summary: "Refresh Token de usuário",
+    requestBody: {
+        required: true,
+        content: {
+            "application/json": {
+                schema: {
+                    type: "object",
+                    properties: {
+                        refreshToken: {
+                            type: "string",
+                            example: "REFRESH TOKEN",
+                        },
+                    },
+                    required: ["refreshToken"],
+                },
+            },
+        },
+    },
+    responses: {
+        200: {
+            description: "Refresh Token gerado",
+            content: {
+                "application/json": {
+                    example: [
+                        {
+                            message: "Autenticado do sucesso",
+                            accessToken: "ACCESS TOKEN",
+                            refreshToken: "REFRESH TOKEN",
+                        },
+                    ],
+                },
+            },
+        },
+        400: {
+            description: "ERROR: Senha inválida",
+            content: {
+                "application/json": {
+                    example: {
+                        statusCode: 400,
+                        message: "Senha inválida",
+                    },
+                },
+            },
+        },
+        401: {
+            description:
+                "ERROR: Refresh token ausente ou Tipo de token inválido",
+            content: {
+                "application/json": {
+                    examples: {
+                        refreshTokenNull: {
+                            summary: "Refresh token ausente",
+                            value: {
+                                statusCode: 401,
+                                message: "Refresh token ausente",
+                            },
+                        },
+                        refreshTokenInvalid: {
+                            summary: "Tipo de token inválido",
+                            value: {
+                                statusCode: 401,
+                                message: "Tipo de token inválido",
+                            },
+                        },
+                        TokenInvalid: {
+                            summary: "Token inválido",
+                            value: {
+                                statusCode: 401,
+                                message: "Token inválido",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
+};
 
 export const usersDocs = {
     "/api/user/signup": {
@@ -157,6 +236,9 @@ export const usersDocs = {
     },
     "/api/user/login": {
         post: loginUserDoc,
+    },
+    "/api/user/refresh": {
+        post: refreshTokenUserDoc,
     },
     "/api/users": {
         get: getUsersDoc,

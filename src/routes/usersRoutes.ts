@@ -36,11 +36,7 @@ class UsersRoutes {
             zodValidation(loginUserSchema),
             this.usersController.login,
         );
-        this.router.post(
-            "/user/refresh",
-            // zodValidation(changeUserPassSchema),
-            this.usersController.refresh,
-        );
+        this.router.post("/user/refresh", this.usersController.refresh);
 
         // Private Routes ADMIN
         this.router.get(
